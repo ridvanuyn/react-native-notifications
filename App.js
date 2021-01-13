@@ -1,30 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
   Text,
   Button,
-  StatusBar,
 } from 'react-native';
-
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
 const App: () => React$Node = () => {
 
@@ -38,19 +16,16 @@ const App: () => React$Node = () => {
   }
   const onPressToNotify2 = () => {
     PushNotification.localNotificationSchedule({
-      //... You can use all the options from localNotifications
-      message: "My Notification Message", // (required)
-      date: new Date(Date.now() + 4 * 1000), // in 60 secs
-      allowWhileIdle: false, // (optional) set notification to work while on doze, default: false
+      message: "My Notification Message", 
+      date: new Date(Date.now() + 4 * 1000), // in 6 sec
+      allowWhileIdle: true, 
       repeatType: "day"
     });
   }
-  const [permissions, setPermissions] = useState({});
-
 
   useEffect(() => {
     PushNotificationIOS.addEventListener('notification', onRemoteNotification);
-   
+
   });
 
   const onRemoteNotification = (notification) => {
@@ -64,51 +39,13 @@ const App: () => React$Node = () => {
   };
   return (
     <>
-    <Text style={{marginTop:100}}>fjdksfjkasşfdkfşldsf</Text>
-      <Button  title="Notify me !" onPress={() => onPressToNotify()}></Button>
-      <Button  title="Notify me 2 !" onPress={() => onPressToNotify2()}></Button>
+      <Text style={{ marginTop: 100 }}>Chose You would like to </Text>
+      <Button title="Notify me !" onPress={() => onPressToNotify()}></Button>
+      <Button title="Notify me after 3 sec !" onPress={() => onPressToNotify2()}></Button>
     </>
   );
 };
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
 import PushNotification from "react-native-push-notification";
