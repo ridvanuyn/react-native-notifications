@@ -1,10 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import {
   Text,
-  Button,
+  Button, Alert
 } from 'react-native';
 
+import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
+import firebase from '@react-native-firebase/app';
+
 const App: () => React$Node = () => {
+
+  function showNotification(notification) {
+    PushNotification.localNotification({
+      title: notification.title,
+      message: notification.body
+    });
+  }
+
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
 
   const onPressToNotify = () => {
     PushNotification.localNotification({
@@ -16,17 +37,38 @@ const App: () => React$Node = () => {
   }
   const onPressToNotify2 = () => {
     PushNotification.localNotificationSchedule({
-      message: "My Notification Message", 
+      message: "My Notification Message",
       date: new Date(Date.now() + 4 * 1000), // in 6 sec
-      allowWhileIdle: true, 
+      allowWhileIdle: true,
       repeatType: "day"
     });
   }
 
   useEffect(() => {
     PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+    firebase
+      .messaging()
+      .getToken(firebase.app().options.messagingSenderId)
+      .then(x => console.log(x))
+      .catch(e => console.log(e));
 
-  });
+    firebase.messaging().onMessage(response => {
+      console.log(JSON.stringify(response));
+      if (Platform.OS === 'ios') {
+        PushNotificationIOS.requestPermissions().then(
+          showNotification(response.notification),
+        );
+      } else {
+        showNotification(response.notification);
+      }
+    });
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+
+  }, []);
 
   const onRemoteNotification = (notification) => {
     const isClicked = notification.getData().userInteraction === 1;
@@ -41,7 +83,7 @@ const App: () => React$Node = () => {
     <>
       <Text style={{ marginTop: 100 }}>Chose You would like to </Text>
       <Button title="Notify me !" onPress={() => onPressToNotify()}></Button>
-      <Button title="Notify me after 3 sec !" onPress={() => onPressToNotify2()}></Button>
+      <Button title="Notify me after 3 secs !" onPress={() => onPressToNotify2()}></Button>
     </>
   );
 };

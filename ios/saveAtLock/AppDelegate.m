@@ -13,6 +13,9 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
+@import Firebase;
+
+
 
 static void InitializeFlipper(UIApplication *application) {
   FlipperClient *client = [FlipperClient sharedClient];
@@ -25,7 +28,9 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+
 @implementation AppDelegate
+
 
 // Required for the register event.
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -74,6 +79,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
+  [FIRApp configure];
   return YES;
 }
 //Called when a notification is delivered to a foreground app.

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "719108037369",
+    "project_id": "saveatlock",
+    "storage_bucket": "saveatlock.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:719108037369:android:9bd510ec18893402cde028",
+        "android_client_info": {
+          "package_name": "com.saveatlock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "719108037369-80jdshoharn1ai9u3um1rge734eikvm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-3Cx9w-i2ZKODeQHCieA3p2KQD-NGOw4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "719108037369-80jdshoharn1ai9u3um1rge734eikvm2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "719108037369-in69bmnshl6uu6ogvsqtru78ng2k6qtp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.saveAtLock"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
