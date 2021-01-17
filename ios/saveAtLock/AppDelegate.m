@@ -1,6 +1,7 @@
 #import "AppDelegate.h"
 #import <RNCPushNotificationIOS.h>
 #import <UserNotifications/UserNotifications.h>
+#import <Firebase.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -13,7 +14,8 @@
 #import <FlipperKitNetworkPlugin/FlipperKitNetworkPlugin.h>
 #import <SKIOSNetworkPlugin/SKIOSNetworkAdapter.h>
 #import <FlipperKitReactPlugin/FlipperKitReactPlugin.h>
-@import Firebase;
+#import <FirebaseCore/FirebaseCore.h>.
+
 
 
 
@@ -79,7 +81,9 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
   center.delegate = self;
-  [FIRApp configure];
+  if ([FIRApp defaultApp] == nil) {
+     [FIRApp configure];
+   }
   return YES;
 }
 //Called when a notification is delivered to a foreground app.

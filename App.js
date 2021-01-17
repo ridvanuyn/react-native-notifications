@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import {
   Text,
-  Button, Alert
+  Button, Alert, TextInput
 } from 'react-native';
+
+import { TestIds, BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+
+import Clipboard from '@react-native-community/clipboard'
 
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
 
 const App: () => React$Node = () => {
+
+  const [tokenIS, setTokenIS] = useState('a');
 
   function showNotification(notification) {
     PushNotification.localNotification({
@@ -44,13 +50,19 @@ const App: () => React$Node = () => {
     });
   }
 
-  useEffect(() => {
-    PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+  useEffect(async () => {
+    if (Platform.OS === 'ios') {
+      PushNotificationIOS.addEventListener('notification', onRemoteNotification);
+    }
     firebase
-      .messaging()
-      .getToken(firebase.app().options.messagingSenderId)
-      .then(x => console.log(x))
+      .messaging().getToken(firebase.app().options.messagingSenderId).then(x => {
+        console.log(x)
+        setTokenIS(x)
+      })
       .catch(e => console.log(e));
+
+    await firebase.messaging().registerDeviceForRemoteMessages();
+    await firebase.messaging().requestPermission();
 
     firebase.messaging().onMessage(response => {
       console.log(JSON.stringify(response));
@@ -71,6 +83,7 @@ const App: () => React$Node = () => {
   }, []);
 
   const onRemoteNotification = (notification) => {
+    console.log(notification)
     const isClicked = notification.getData().userInteraction === 1;
 
     if (isClicked) {
@@ -79,11 +92,31 @@ const App: () => React$Node = () => {
       // Do something else with push notification
     }
   };
+  const clip = async (text) => {
+    await Clipboard.setString(text)
+    alert("Boom, Copied");
+  }
   return (
     <>
       <Text style={{ marginTop: 100 }}>Chose You would like to </Text>
+      {//tokenIS && <Text onPress={() => clip(tokenIS)} style={{ marginTop: 20 }}>{tokenIS}</Text>
+      }
+      {tokenIS && <TextInput></TextInput>}
       <Button title="Notify me !" onPress={() => onPressToNotify()}></Button>
       <Button title="Notify me after 3 secs !" onPress={() => onPressToNotify2()}></Button>
+      <BannerAd
+        unitId={TestIds.BANNER}
+        size={BannerAdSize.SMART_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+        }}
+        onAdLoaded={() => {
+          console.log('Advert loaded');
+        }}
+        onAdFailedToLoad={(error) => {
+          console.error('Advert failed to load: ', error);
+        }}
+      />
     </>
   );
 };
