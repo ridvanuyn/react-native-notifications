@@ -4,7 +4,7 @@ import {
   Button, Alert, TextInput
 } from 'react-native';
 
-import { TestIds, BannerAd, BannerAdSize } from '@react-native-firebase/admob';
+import { TestIds, BannerAd, BannerAdSize, InterstitialAd, AdEventType, RewardedAd, RewardedAdEventType } from '@react-native-firebase/admob';
 
 import Clipboard from '@react-native-community/clipboard'
 
@@ -78,10 +78,55 @@ const App: () => React$Node = () => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
 
+
+
     return unsubscribe;
+
+
 
   }, []);
 
+  showRewardAd = () => {
+    // Create a new instance
+    const rewardAd = RewardedAd.createForAdRequest(TestIds.REWARDED);
+
+    // Add event handlers
+    rewardAd.onAdEvent((type, error) => {
+        if (type === RewardedAdEventType.LOADED) {
+            rewardAd.show();
+        }
+
+        if (type === RewardedAdEventType.EARNED_REWARD) {
+            console.log('User earned reward of 5 lives');
+            Alert.alert(
+                'Reward Ad',
+                'You just earned a reward of 5 lives',
+                [
+                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+                { cancelable: true }
+              )
+        }
+    });
+
+    // Load a new advert
+    rewardAd.load();
+}
+
+  showInterstitialAd = () => {
+    // Create a new instance
+    const interstitialAd = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
+
+    // Add event handlers
+    interstitialAd.onAdEvent((type, error) => {
+      if (type === AdEventType.LOADED) {
+        interstitialAd.show();
+      }
+    });
+
+    // Load a new advert
+    interstitialAd.load();
+  }
   const onRemoteNotification = (notification) => {
     console.log(notification)
     const isClicked = notification.getData().userInteraction === 1;
@@ -103,6 +148,8 @@ const App: () => React$Node = () => {
       }
       {tokenIS && <TextInput></TextInput>}
       <Button title="Notify me !" onPress={() => onPressToNotify()}></Button>
+      <Button title="Admob Interstitial me !" onPress={() => showInterstitialAd()}></Button>
+      <Button title="Admob Rewarded me !" onPress={() => showRewardAd()}></Button>
       <Button title="Notify me after 3 secs !" onPress={() => onPressToNotify2()}></Button>
       <BannerAd
         unitId={TestIds.BANNER}
